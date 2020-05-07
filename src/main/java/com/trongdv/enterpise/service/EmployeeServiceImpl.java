@@ -22,16 +22,16 @@ public class EmployeeServiceImpl implements EmployeeServices {
     }
 
     @Override
-    public void create(Employee employee) {
+    public Employee createOrUpdate(Employee employee) {
         employee.setCreatedAt(Instant.now());
         employee.setUpdatedAt(Instant.now());
         employee.setStatus(1);
-        employeeRepository.save(employee);
+        return employeeRepository.save(employee);
     }
 
     @Override
-    public Optional<Employee> getById(Long id) {
-        return employeeRepository.findById(id);
+    public Employee getById(Long id) {
+        return employeeRepository.findById(id).orElseThrow(NullPointerException::new);
     }
 
     @Override

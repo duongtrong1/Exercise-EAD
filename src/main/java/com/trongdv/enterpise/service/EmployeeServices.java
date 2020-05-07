@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface EmployeeServices {
 
-    void create(Employee employee);
+    Employee createOrUpdate(Employee employee);
 
-    Optional<Employee> getById(Long id);
+    Employee getById(Long id);
 
     void delete(Long id);
 

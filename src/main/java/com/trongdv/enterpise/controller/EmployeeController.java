@@ -58,7 +58,7 @@ public class EmployeeController {
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Employee employee) {
         try {
-            employeeServices.create(employee);
+            employeeServices.createOrUpdate(employee);
             return new ResponseEntity<>(new ResponseData<>(HttpStatus.OK.value(), "Success", employee), HttpStatus.CREATED);
         } catch (DataAccessException e) {
             e.printStackTrace();
@@ -68,17 +68,27 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable Long id) {
-        Optional<Employee> employee = employeeServices.getById(id);
-        if (employee.isEmpty()) {
+        Employee employee = employeeServices.getById(id);
+        if (employee == null) {
             return new ResponseEntity<>(new ResponseData<>(HttpStatus.NOT_FOUND.value(), "Id not found", null), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(new ResponseData<>(HttpStatus.OK.value(), "Success", employee), HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> update(@PathVariable Long id) {
+        Employee employee = employeeServices.getById(id);
+        if (employee == null) {
+            return new ResponseEntity<>(new ResponseData<>(HttpStatus.NOT_FOUND.value(), "Id not found", null), HttpStatus.NOT_FOUND);
+        }
+        Employee current = employeeServices.createOrUpdate(employee);
+        return new ResponseEntity<>(new ResponseData<>(HttpStatus.OK.value(), "Success", current), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteById(@PathVariable Long id) {
-        Optional<Employee> employee = employeeServices.getById(id);
-        if (employee.isEmpty()) {
+        Employee employee = employeeServices.getById(id);
+        if (employee == null) {
             return new ResponseEntity<>(new ResponseData<>(HttpStatus.NOT_FOUND.value(), "Id not found", null), HttpStatus.NOT_FOUND);
         }
         employeeServices.delete(id);
